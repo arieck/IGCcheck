@@ -39,34 +39,31 @@ Func main()
 		Exit
 	EndIf
 
+	; define the bin directory from ini file, or set the default
 	$valiBinDirectory = IniRead ( "IGCcheck.ini", "valiexe", "directory", @WorkingDir & "\bin" )
 	if ($valiBinDirectory == "") Then
 		$valiBinDirectory =  @WorkingDir & "\bin"
 	EndIf
 
-	; Create a constant variable in Local scope of the message to display in IgcFileSelectFolder.
+	; Display an open dialog to let select the directory, with some error handling
 	Local Const $sIgcMessage = "Select the folder of your IGC files to check them."
-
-    ; Display an open dialog to select the directory.
-    Local $sIgcFileSelectFolder = FileSelectFolder($sIgcMessage, @WorkingDir)
-    If @error Then
-        ; Display the error message.
-        MsgBox($MB_ICONINFORMATION, "", "No IGC folder was selected.")
+	Local $sIgcFileSelectFolder = FileSelectFolder($sIgcMessage, @WorkingDir)
+	If @error Then
+		; Display the error message.
+		MsgBox($MB_ICONINFORMATION, "", "No IGC folder was selected.")
 		Exit
-    EndIf
+	EndIf
+	Local $IGCfiles = _FileListToArray($sIgcFileSelectFolder, "*.igc")
+	If @error = 1 Then
+		MsgBox($MB_ICONINFORMATION, "", "Path was invalid.")
+		Exit
+	EndIf
+	If @error = 4 Then
+		MsgBox($MB_ICONINFORMATION, "", "No IGC files were found within current directory.")
+		Exit
+	EndIf
 
-    ; List all the files and folders in the desktop directory using the default parameters.
-    Local $IGCfiles = _FileListToArray($sIgcFileSelectFolder, "*.igc")
-    If @error = 1 Then
-        MsgBox($MB_ICONINFORMATION, "", "Path was invalid.")
-        Exit
-    EndIf
-    If @error = 4 Then
-        MsgBox($MB_ICONINFORMATION, "", "No IGC files were found within current directory.")
-        Exit
-    EndIf
-
-	; display a message box before executing the validation
+	; display a message box with number of found igc files, before executing the validation
 	$numberOfFiles = $IGCfiles[0]
 	if($numberOfFiles > 2) Then
 		MsgBox($MB_ICONINFORMATION, "", "Found '" & $numberOfFiles & "' IGC files to check within " & $sIgcFileSelectFolder & " This may take a while.")
@@ -74,8 +71,9 @@ Func main()
 		MsgBox($MB_ICONINFORMATION, "", "Found '" & $numberOfFiles & "' IGC files to checkwithin " & $sIgcFileSelectFolder & " Click OK to start the validation check.")
 	EndIf
 
-	; create a array to store the results
+	; define a array to store the results
 	Global $resultArray[$numberOfFiles+1][3]
+	; table header
 	$resultArray[0][0] = "IGC file"
 	$resultArray[0][1] = "Result"
 	$resultArray[0][2] = "A-Record"
