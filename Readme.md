@@ -9,13 +9,28 @@ from a FS competition folder, with a single mouse click.
 (instead of using the WebInterface at http://vali.fai-civl.org/)
 More details, at http://fs.fai.org/
 
-
-Prerequisites, recommended Installation:
+Prerequisites:
 Windows 10 x86 (or x64) + .Net 3.5 and .Net 4.0
 
 Since unfortunately some vali.exe files are not (yet) compatible
 to the CIVL draft standard, you need to have .Net framework 
 installed (3.5 and 4.0). 
+
+Installation:
+Download everything here from GitHub as a ZIP.
+Then extract it on your PC, for example into your FS folder as a 
+new subdirectory called "IGCcheck".
+
+HowTo Run:
+make sure you have the "bin" with all vali exe files within same 
+directory of IGCcheck.exe.
+Double click the IGCcheck.exe, you will be asked to select the 
+directory where your IGC files are located.
+
+The IGC scan may take about 2-3sec for each IGC file.
+So if you have many files to check, you have to wait a while, 
+until you see the result window.
+The program runs completely on the background, without any progress bar.
 
 SourceCode:
 The code is based on a simple AutoIt script. 
